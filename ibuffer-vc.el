@@ -89,7 +89,7 @@
 (defun ibuffer-vc-generate-filter-groups-by-vc-root ()
   "Create a set of ibuffer filter groups based on the vc root dirs of buffers"
   (mapcar (lambda (vc-dir)
-                  (cons (format "%s:%s" vc-dir) `((vc-root . ,vc-dir))))
+                  (cons (format "%s" vc-dir) `((vc-root . ,vc-dir))))
                 (ibuffer-remove-duplicates
                  (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
 
