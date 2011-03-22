@@ -59,6 +59,7 @@
 ;; requires
 
 (require 'ibuffer)
+(require 'ibuf-ext)
 (require 'vc-hooks)
 
 ;;; Group and filter ibuffer entries by parent vc directory
