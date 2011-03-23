@@ -23,8 +23,8 @@
 ;;; Commentary:
 ;;
 ;; Adds functionality to ibuffer for grouping buffers by their parent
-;; vc root directory, and for displaying the vc status of listed
-;; files.
+;; vc root directory, and for displaying and/or sorting by the vc
+;; status of listed files.
 ;;
 ;;; Use:
 ;;
@@ -53,6 +53,10 @@
 ;;               (vc-status 16 16 :left)
 ;;               " "
 ;;               filename-and-process)))
+;;
+;; To sort by vc status, use `ibuffer-do-sort-by-vc-status', which can
+;; also be selected by repeatedly executing
+;; `ibuffer-toggle-sorting-mode' (bound to "," by default).
 ;;
 ;;; Code:
 
@@ -103,13 +107,16 @@
 
 ;;; Display vc status info in the ibuffer list
 
+(defun ibuffer-vc--status-string ()
+  (when buffer-file-name
+    (let ((state (vc-state buffer-file-name)))
+      (if state
+          (symbol-name state)
+        "-"))))
+
 (define-ibuffer-column vc-status
   (:name "VC status" :inline t)
-  (if buffer-file-name
-      (let ((state (vc-state buffer-file-name)))
-        (if state
-          (symbol-name state)
-          "-"))))
+  (ibuffer-vc--status-string))
 
 (define-ibuffer-column vc-status-mini
   (:name "V" :inline t)
@@ -125,6 +132,21 @@
          ((eq 'ignored state) "I")
          ((memq state '(() unregistered missing)) "?")))
     " "))
+
+;;;###autoload (autoload 'ibuffer-do-sort-by-vc-status "ibuffer-vc")
+(define-ibuffer-sorter vc-status
+  "Sort the buffers by their vc status."
+  (:description "vc status")
+  (let ((file1 (with-current-buffer (car a)
+                 buffer-file-name))
+        (file2 (with-current-buffer (car b)
+                 buffer-file-name)))
+    (if (and file1 file2)
+        (string-lessp (with-current-buffer (car a)
+                        (ibuffer-vc--status-string))
+                      (with-current-buffer (car b)
+                        (ibuffer-vc--status-string)))
+      (not (null file1)))))
 
 
 (provide 'ibuffer-vc)
