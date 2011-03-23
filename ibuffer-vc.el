@@ -69,33 +69,42 @@
 ;;; Group and filter ibuffer entries by parent vc directory
 
 
-;; TODO: get this info by querying the vc backend for each file
 (defun ibuffer-vc--find-any-root (file-name)
-  (let ((root nil))
-    (loop for dir in '(".git" ".svn" "CVS" ".bzr" "_darcs")
-          do (setq root (vc-find-root file-name dir))
-          until root
-          finally return root)))
+  "Return a cons cell (backend-name . root-dir), or nil if the
+file is not under version control"
+  (let* ((backend (vc-backend file-name)))
+    (when backend
+      (let* ((root-fn-name (intern (format "vc-%s-root" backend)))
+             (root-dir
+              (cond
+               ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
+               ((eq 'darcs backend) (vc-darcs-find-root file-name))
+               ((eq 'cvs backend) (vc-find-root file-name "CVS"))
+               (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
+        (cons backend root-dir)))))
+
+(defun ibuffer-vc--file-or-directory (buf)
+  (let* ((file (buffer-local-value 'buffer-file-name buf))
+         (dir (buffer-local-value 'default-directory buf)))
+    (or file dir)))
 
 (defun ibuffer-vc-root (buf)
-  (let* ((file (buffer-local-value 'buffer-file-name buf))
-         (dir (buffer-local-value 'default-directory buf))
-         (ref (or file dir)))
-    (ibuffer-vc--find-any-root ref)))
+  (ibuffer-vc--find-any-root (ibuffer-vc--file-or-directory buf)))
 
 (define-ibuffer-filter vc-root
     "Toggle current view to buffers with vc root dir QUALIFIER."
   (:description "vc root dir"
                 :reader (read-from-minibuffer "Filter by vc root dir (regexp): "))
-  (ibuffer-awhen (ibuffer-vc-root buf)
-    (string-match (expand-file-name qualifier) (expand-file-name it))))
+  (ibuffer-awhen (ibuffer-vc--file-or-directory buf)
+    (string-match qualifier (expand-file-name it))))
 
 (defun ibuffer-vc-generate-filter-groups-by-vc-root ()
   "Create a set of ibuffer filter groups based on the vc root dirs of buffers"
-  (mapcar (lambda (vc-dir)
-                  (cons (format "%s" vc-dir) `((vc-root . ,vc-dir))))
-                (ibuffer-remove-duplicates
-                 (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
+  (mapcar (lambda (vc-root)
+            (cons (format "%s:%s" (car vc-root) (cdr vc-root))
+                  `((vc-root . ,(expand-file-name (cdr vc-root))))))
+          (ibuffer-remove-duplicates
+           (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
 
 ;;;###autoload
 (defun ibuffer-vc-set-filter-groups-by-vc-root ()
