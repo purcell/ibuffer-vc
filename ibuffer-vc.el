@@ -74,7 +74,7 @@
 file is not under version control"
   (let* ((backend (vc-backend file-name)))
     (when backend
-      (let* ((root-fn-name (intern (format "vc-%s-root" backend)))
+      (let* ((root-fn-name (intern (format "vc-%s-root" (downcase (symbol-name backend)))))
              (root-dir
               (cond
                ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
