@@ -100,11 +100,14 @@ file is not under version control"
 
 (defun ibuffer-vc-generate-filter-groups-by-vc-root ()
   "Create a set of ibuffer filter groups based on the vc root dirs of buffers"
-  (mapcar (lambda (vc-root)
-            (cons (format "%s:%s" (car vc-root) (cdr vc-root))
-                  `((vc-root . ,(expand-file-name (cdr vc-root))))))
-          (ibuffer-remove-duplicates
-           (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
+  (let ((roots (ibuffer-remove-duplicates
+                (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
+    (sort roots (lambda (r1 r2)
+                  (string-prefix-p (cdr r2) (cdr r1))))
+    (mapcar (lambda (vc-root)
+              (cons (format "%s:%s" (car vc-root) (cdr vc-root))
+                    `((vc-root . ,(expand-file-name (cdr vc-root))))))
+            roots)))
 
 ;;;###autoload
 (defun ibuffer-vc-set-filter-groups-by-vc-root ()
