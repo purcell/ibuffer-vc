@@ -78,8 +78,8 @@ file is not under version control"
              (root-dir
               (cond
                ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
-               ((eq 'darcs backend) (vc-darcs-find-root file-name))
-               ((eq 'cvs backend) (vc-find-root file-name "CVS"))
+               ((memq backend '(darcs DARCS)) (vc-darcs-find-root file-name))
+               ((memq backend '(cvs CVS)) (vc-find-root file-name "CVS"))
                (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
         (cons backend root-dir)))))
 
