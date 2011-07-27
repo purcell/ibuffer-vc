@@ -34,7 +34,7 @@
 ;;
 ;; or, make this the default:
 ;;
-;;   (add-hook 'ibuffer-mode-hook
+;;   (add-hook 'ibuffer-hook
 ;;     (lambda ()
 ;;       (ibuffer-vc-set-filter-groups-by-vc-root)
 ;;       (ibuffer-do-sort-by-alphabetic)))
