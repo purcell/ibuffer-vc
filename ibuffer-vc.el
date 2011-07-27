@@ -65,14 +65,22 @@
 (require 'ibuffer)
 (require 'ibuf-ext)
 (require 'vc-hooks)
+(require 'cl)
 
 ;;; Group and filter ibuffer entries by parent vc directory
 
+(defun ibuffer-vc--deduce-backend (file)
+  (or (vc-backend file)
+      (loop for backend in vc-handled-backends
+            when (vc-call-backend backend 'responsible-p file)
+            return backend)))
 
-(defun ibuffer-vc--find-any-root (file-name)
+(defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir), or nil if the
 file is not under version control"
-  (let* ((backend (vc-backend file-name)))
+  (let* ((file-name (with-current-buffer buf
+                      (or buffer-file-name default-directory)))
+         (backend (ibuffer-vc--deduce-backend file-name)))
     (when backend
       (let* ((root-fn-name (intern (format "vc-%s-root" (downcase (symbol-name backend)))))
              (root-dir
@@ -83,30 +91,20 @@ file is not under version control"
                (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
         (cons backend root-dir)))))
 
-(defun ibuffer-vc--file-or-directory (buf)
-  (let* ((file (buffer-local-value 'buffer-file-name buf))
-         (dir (buffer-local-value 'default-directory buf)))
-    (or file dir)))
-
-(defun ibuffer-vc-root (buf)
-  (ibuffer-vc--find-any-root (ibuffer-vc--file-or-directory buf)))
-
 (define-ibuffer-filter vc-root
     "Toggle current view to buffers with vc root dir QUALIFIER."
   (:description "vc root dir"
                 :reader (read-from-minibuffer "Filter by vc root dir (regexp): "))
-  (ibuffer-awhen (ibuffer-vc--file-or-directory buf)
-    (string-match qualifier (expand-file-name it))))
+  (ibuffer-awhen (ibuffer-vc-root buf)
+    (equal qualifier it)))
 
 (defun ibuffer-vc-generate-filter-groups-by-vc-root ()
   "Create a set of ibuffer filter groups based on the vc root dirs of buffers"
   (let ((roots (ibuffer-remove-duplicates
                 (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
-    (sort roots (lambda (r1 r2)
-                  (string-prefix-p (cdr r2) (cdr r1))))
     (mapcar (lambda (vc-root)
               (cons (format "%s:%s" (car vc-root) (cdr vc-root))
-                    `((vc-root . ,(expand-file-name (cdr vc-root))))))
+                    `((vc-root . ,vc-root))))
             roots)))
 
 ;;;###autoload
