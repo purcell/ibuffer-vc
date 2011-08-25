@@ -1,25 +1,26 @@
-;;; ibuffer-vc --- make ibuffer's buffer list aware of files' vc status
-
+;;; ibuffer-vc.el --- Group ibuffer's list by VC project, or show VC status
+;;
 ;; Copyright (C) 2011 Steve Purcell
-
-;; Author: Steve Purcell <steve [at] sanityinc.com>
+;;
+;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: themes
 ;; X-URL: http://github.com/purcell/ibuffer-vc
 ;; URL: http://github.com/purcell/ibuffer-vc
-
+;; Version: 0.1
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+;;
 ;;; Commentary:
 ;;
 ;; Adds functionality to ibuffer for grouping buffers by their parent
@@ -160,3 +161,4 @@ file is not under version control"
 
 
 (provide 'ibuffer-vc)
+;;; ibuffer-vc.el ends here
