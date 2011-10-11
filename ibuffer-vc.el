@@ -66,7 +66,8 @@
 (require 'ibuffer)
 (require 'ibuf-ext)
 (require 'vc-hooks)
-(require 'cl)
+(eval-when-compile
+  (require 'cl))
 
 ;;; Group and filter ibuffer entries by parent vc directory
 
