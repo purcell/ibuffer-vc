@@ -126,12 +126,14 @@ file is not under version control"
           (symbol-name state)
         "-"))))
 
+;;;###autoload (autoload 'ibuffer-make-column-vc-status "ibuffer-vc")
 (define-ibuffer-column vc-status
-  (:name "VC status" :inline t)
+  (:name "VC status")
   (ibuffer-vc--status-string))
 
+;;;###autoload (autoload 'ibuffer-make-column-vc-status-mini "ibuffer-vc")
 (define-ibuffer-column vc-status-mini
-  (:name "V" :inline t)
+  (:name "V")
   (if buffer-file-name
       (let ((state (vc-state buffer-file-name)))
         (cond
