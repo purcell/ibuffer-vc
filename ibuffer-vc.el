@@ -6,7 +6,7 @@
 ;; Keywords: themes
 ;; X-URL: http://github.com/purcell/ibuffer-vc
 ;; URL: http://github.com/purcell/ibuffer-vc
-;; Version: 0.2
+;; Version: DEV
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -69,7 +69,21 @@
 (eval-when-compile
   (require 'cl))
 
+(defgroup ibuffer-vc nil
+  "Group ibuffer entries according to their version control status."
+  :prefix "ibuffer-vc-"
+  :group 'convenience)
+
+(defcustom ibuffer-vc-skip-if-remote t
+  "If non-nil, don't query the VC status of remote files."
+  :type 'boolean
+  :group 'ibuffer-vc)
+
 ;;; Group and filter ibuffer entries by parent vc directory
+
+(defun ibuffer-vc--include-file-p (file)
+  (and file (or (null ibuffer-vc-skip-if-remote)
+                (not (file-remote-p file)))))
 
 (defun ibuffer-vc--deduce-backend (file)
   (or (vc-backend file)
@@ -80,18 +94,18 @@
 (defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir), or nil if the
 file is not under version control"
-  (let* ((file-name (with-current-buffer buf
-                      (or buffer-file-name default-directory)))
-         (backend (ibuffer-vc--deduce-backend file-name)))
-    (when backend
-      (let* ((root-fn-name (intern (format "vc-%s-root" (downcase (symbol-name backend)))))
-             (root-dir
-              (cond
-               ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
-               ((memq backend '(darcs DARCS)) (vc-darcs-find-root file-name))
-               ((memq backend '(cvs CVS)) (vc-find-root file-name "CVS"))
-               (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
-        (cons backend root-dir)))))
+  (let ((file-name (with-current-buffer buf (or buffer-file-name default-directory))))
+    (when (ibuffer-vc--include-file-p file-name)
+      (let ((backend (ibuffer-vc--deduce-backend file-name)))
+        (when backend
+          (let* ((root-fn-name (intern (format "vc-%s-root" (downcase (symbol-name backend)))))
+                 (root-dir
+                  (cond
+                   ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
+                   ((memq backend '(darcs DARCS)) (vc-darcs-find-root file-name))
+                   ((memq backend '(cvs CVS)) (vc-find-root file-name "CVS"))
+                   (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
+            (cons backend root-dir)))))))
 
 (define-ibuffer-filter vc-root
     "Toggle current view to buffers with vc root dir QUALIFIER."
@@ -120,7 +134,7 @@ file is not under version control"
 ;;; Display vc status info in the ibuffer list
 
 (defun ibuffer-vc--status-string ()
-  (when buffer-file-name
+  (when (and buffer-file-name (ibuffer-vc--include-file-p buffer-file-name))
     (let ((state (vc-state buffer-file-name)))
       (if state
           (symbol-name state)
@@ -134,7 +148,7 @@ file is not under version control"
 ;;;###autoload (autoload 'ibuffer-make-column-vc-status-mini "ibuffer-vc")
 (define-ibuffer-column vc-status-mini
   (:name "V")
-  (if buffer-file-name
+  (if (and buffer-file-name (ibuffer-vc--include-file-p buffer-file-name))
       (let ((state (vc-state buffer-file-name)))
         (cond
          ((eq 'added state) "A")
