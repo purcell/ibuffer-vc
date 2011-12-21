@@ -40,6 +40,10 @@
 ;;       (ibuffer-vc-set-filter-groups-by-vc-root)
 ;;       (ibuffer-do-sort-by-alphabetic)))
 ;;
+;; Alternatively, use `ibuffer-vc-generate-filter-groups-by-vc-root'
+;; to programmatically obtain a list of filter groups that you can
+;; combine with your own custom groups.
+;;
 ;; To include vc status info in the ibuffer list, add either
 ;; vc-status-mini or vc-status to `ibuffer-formats':
 ;;
@@ -114,6 +118,7 @@ file is not under version control"
   (ibuffer-awhen (ibuffer-vc-root buf)
     (equal qualifier it)))
 
+;;;###autoload
 (defun ibuffer-vc-generate-filter-groups-by-vc-root ()
   "Create a set of ibuffer filter groups based on the vc root dirs of buffers"
   (let ((roots (ibuffer-remove-duplicates
