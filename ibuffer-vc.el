@@ -1,6 +1,6 @@
 ;;; ibuffer-vc.el --- Group ibuffer's list by VC project, or show VC status
 ;;
-;; Copyright (C) 2011 Steve Purcell
+;; Copyright (C) 2011-2012 Steve Purcell
 ;;
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: themes
