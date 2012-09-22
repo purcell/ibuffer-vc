@@ -38,7 +38,8 @@
 ;;   (add-hook 'ibuffer-hook
 ;;     (lambda ()
 ;;       (ibuffer-vc-set-filter-groups-by-vc-root)
-;;       (ibuffer-do-sort-by-alphabetic)))
+;;       (unless (eq ibuffer-sorting-mode 'alphabetic)
+;;         (ibuffer-do-sort-by-alphabetic))))
 ;;
 ;; Alternatively, use `ibuffer-vc-generate-filter-groups-by-vc-root'
 ;; to programmatically obtain a list of filter groups that you can
