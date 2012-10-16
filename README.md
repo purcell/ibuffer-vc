@@ -16,3 +16,9 @@ See `ibuffer-vc.el`, or (preferred) install from [Marmalade][Marmalade] or [Melp
 [Melpa]: http://melpa.milkbox.net "Melpa"
 [Marmalade]: http://marmalade-repo.org "Marmalade"
 
+
+<hr>
+
+[![](http://api.coderwall.com/purcell/endorsecount.png)](http://coderwall.com/purcell)
+
+[![](http://www.linkedin.com/img/webpromo/btn_liprofile_blue_80x15.png)](http://uk.linkedin.com/in/stevepurcell)
