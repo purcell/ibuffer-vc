@@ -134,7 +134,12 @@ file is not under version control"
   "Set the current filter groups to filter by vc root dir."
   (interactive)
   (setq ibuffer-filter-groups (ibuffer-vc-generate-filter-groups-by-vc-root))
-  (ibuffer-update nil t))
+  (message "ibuffer-vc: groups set")
+  (let ((ibuf (get-buffer "*Ibuffer*")))
+    (when ibuf
+        (with-current-buffer ibuf
+          (pop-to-buffer ibuf)
+          (ibuffer-update nil t)))))
 
 
 ;;; Display vc status info in the ibuffer list
