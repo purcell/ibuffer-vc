@@ -71,8 +71,7 @@
 (require 'ibuffer)
 (require 'ibuf-ext)
 (require 'vc-hooks)
-(eval-when-compile
-  (require 'cl))
+
 
 (defgroup ibuffer-vc nil
   "Group ibuffer entries according to their version control status."
