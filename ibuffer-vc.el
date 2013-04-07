@@ -4,6 +4,7 @@
 ;;
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: themes
+;; Package-Requires: ((cl-lib "0.2"))
 ;; X-URL: http://github.com/purcell/ibuffer-vc
 ;; URL: http://github.com/purcell/ibuffer-vc
 ;; Version: DEV
@@ -71,6 +72,7 @@
 (require 'ibuffer)
 (require 'ibuf-ext)
 (require 'vc-hooks)
+(require 'cl-lib)
 
 
 (defgroup ibuffer-vc nil
@@ -91,9 +93,9 @@
 
 (defun ibuffer-vc--deduce-backend (file)
   (or (vc-backend file)
-      (loop for backend in vc-handled-backends
-            when (vc-call-backend backend 'responsible-p file)
-            return backend)))
+      (cl-loop for backend in vc-handled-backends
+               when (vc-call-backend backend 'responsible-p file)
+               return backend)))
 
 (defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir), or nil if the
