@@ -168,7 +168,7 @@ If the file is not under version control, nil is returned instead."
         (cond
          ((eq 'added state) "A")
          ((eq 'removed state) "D")
-         ((eq 'up-to-date state) "@")
+         ((eq 'up-to-date state) "=")
          ((eq 'edited state) "*")
          ((eq 'needs-update state) "O")
          ((memq state '(conflict needs-merge unlocked-changes)) "!")
