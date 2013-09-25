@@ -8,9 +8,11 @@ If, like me, you mostly work on version-controlled files, you might
 like to see your buffers grouped by the associated version control
 project.
 
-That's where `ibuffer-vc` comes in: it lets you group your buffers by
-their parent vc root directory, and/or display/sort them by the files'
-VC status.
+That's where `ibuffer-vc` comes in: it lets you:
+
+* Group your buffers by their parent vc root directory
+* See the VC status of the associated files
+* Sort buffers by their VC status
 
 ## Screenshot ##
 
