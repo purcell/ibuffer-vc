@@ -1,8 +1,16 @@
 # ibuffer-vc: Group buffers in ibuffer list by VC project #
 
-Adds functionality to Emacs' ibuffer-mode for grouping buffers by
-their parent vc root directory, and for displaying and/or sorting by
-the vc status of listed files.
+Emacs' `ibuffer-mode` is a wonderful replacement for the built-in
+`list-buffer` command, and allows buffers to be grouped
+programatically, e.g. by major mode.
+
+If, like me, you mostly work on version-controlled files, you might
+like to see your buffers grouped by the associated version control
+project.
+
+That's where `ibuffer-vc` comes in: it lets you group your buffers by
+their parent vc root directory, and/or display/sort them by the files'
+VC status.
 
 ## Screenshot ##
 
