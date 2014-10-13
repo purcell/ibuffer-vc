@@ -91,7 +91,7 @@
 The function is passed a filename, and should return non-nil if the file
 is to be grouped.
 
-This option can be used to exclude certain files the grouping mechanism."
+This option can be used to exclude certain files from the grouping mechanism."
   :type 'function
   :group 'ibuffer-vc)
 
