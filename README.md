@@ -1,3 +1,6 @@
+[![Melpa Status](http://melpa.milkbox.net/packages/ibuffer-vc-badge.svg)](http://melpa.milkbox.net/#/ibuffer-vc)
+[![Melpa Stable Status](http://melpa-stable.milkbox.net/packages/ibuffer-vc-badge.svg)](http://melpa-stable.milkbox.net/#/ibuffer-vc)
+
 # ibuffer-vc: Group buffers in ibuffer list by VC project #
 
 Emacs' `ibuffer-mode` is a wonderful replacement for the built-in
