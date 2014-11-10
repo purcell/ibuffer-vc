@@ -102,6 +102,7 @@ This option can be used to exclude certain files from the grouping mechanism."
   (and file
        (or (null ibuffer-vc-skip-if-remote)
            (not (file-remote-p file)))
+       (file-readable-p file)
        (funcall ibuffer-vc-include-function file)))
 
 (defun ibuffer-vc--deduce-backend (file)
