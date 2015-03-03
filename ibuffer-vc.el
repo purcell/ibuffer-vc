@@ -106,10 +106,7 @@ This option can be used to exclude certain files from the grouping mechanism."
 
 (defun ibuffer-vc--deduce-backend (file)
   "Return the vc backend for FILE, or nil if not under VC supervision."
-  (or (vc-backend file)
-      (cl-loop for backend in vc-handled-backends
-               when (vc-call-backend backend 'responsible-p file)
-               return backend)))
+  (ignore-errors (vc-responsible-backend file)))
 
 (defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir) for BUF.
@@ -159,10 +156,14 @@ If the file is not under version control, nil is returned instead."
 
 ;;; Display vc status info in the ibuffer list
 
+(defun ibuffer-vc--state (file)
+  "Return the `vc-state' for FILE, or nil if unregistered."
+  (ignore-errors (vc-state file)))
+
 (defun ibuffer-vc--status-string ()
   "Return a short string to represent the current buffer's status."
   (when (and buffer-file-name (ibuffer-vc--include-file-p buffer-file-name))
-    (let ((state (vc-state buffer-file-name)))
+    (let ((state (ibuffer-vc--state buffer-file-name)))
       (if state
           (symbol-name state)
         "-"))))
@@ -176,7 +177,7 @@ If the file is not under version control, nil is returned instead."
 (define-ibuffer-column vc-status-mini
   (:name "V")
   (if (and buffer-file-name (ibuffer-vc--include-file-p buffer-file-name))
-      (let ((state (vc-state buffer-file-name)))
+      (let ((state (ibuffer-vc--state buffer-file-name)))
         (cond
          ((eq 'added state) "A")
          ((eq 'removed state) "D")
