@@ -106,7 +106,12 @@ This option can be used to exclude certain files from the grouping mechanism."
 
 (defun ibuffer-vc--deduce-backend (file)
   "Return the vc backend for FILE, or nil if not under VC supervision."
-  (ignore-errors (vc-responsible-backend file)))
+  (if (fboundp 'vc-responsible-backend)
+      (ignore-errors (vc-responsible-backend file))
+    (or (vc-backend file)
+        (cl-loop for backend in vc-handled-backends
+                 when (vc-call-backend backend 'responsible-p file)
+                 return backend))))
 
 (defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir) for BUF.
