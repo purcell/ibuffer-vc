@@ -23,7 +23,7 @@ That's where `ibuffer-vc` comes in: it lets you:
 
 ## How to install ##
 
-See `ibuffer-vc.el`, or (preferred) install from or [MELPA][MELPA].
+See `ibuffer-vc.el`, or (preferred) install from [MELPA][MELPA].
 
 
 [MELPA]: http://melpa.org "MELPA"
