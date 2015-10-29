@@ -23,11 +23,10 @@ That's where `ibuffer-vc` comes in: it lets you:
 
 ## How to install ##
 
-See `ibuffer-vc.el`, or (preferred) install from [Marmalade][Marmalade] or [Melpa][Melpa].
+See `ibuffer-vc.el`, or (preferred) install from or [MELPA][MELPA].
 
 
-[Melpa]: http://melpa.org "Melpa"
-[Marmalade]: http://marmalade-repo.org "Marmalade"
+[MELPA]: http://melpa.org "MELPA"
 
 
 <hr>
