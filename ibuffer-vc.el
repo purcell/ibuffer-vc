@@ -116,7 +116,10 @@ This option can be used to exclude certain files from the grouping mechanism."
 (defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir) for BUF.
 If the file is not under version control, nil is returned instead."
-  (let ((file-name (with-current-buffer buf (or buffer-file-name default-directory))))
+  (let ((file-name (with-current-buffer buf
+                     (or (when buffer-file-name
+                           (file-truename buffer-file-name))
+                         default-directory))))
     (when (ibuffer-vc--include-file-p file-name)
       (let ((backend (ibuffer-vc--deduce-backend file-name)))
         (when backend
