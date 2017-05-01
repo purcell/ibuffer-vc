@@ -168,6 +168,7 @@ If the file is not under version control, nil is returned instead."
 
 (defun ibuffer-vc--state (file)
   "Return the `vc-state' for FILE, or nil if unregistered."
+  (vc-refresh-state)
   (ignore-errors (vc-state file)))
 
 (defun ibuffer-vc--status-string ()
