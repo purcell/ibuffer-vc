@@ -136,7 +136,7 @@ If the file is not under version control, nil is returned instead."
 (define-ibuffer-filter vc-root
     "Toggle current view to buffers with vc root dir QUALIFIER."
   (:description "vc root dir"
-                :reader (read-from-minibuffer "Filter by vc root dir: " nil nil t))
+                :reader (read-regexp "Filter by vc root dir: "))
   (ibuffer-awhen (ibuffer-vc-root buf)
     (equal qualifier it)))
 
