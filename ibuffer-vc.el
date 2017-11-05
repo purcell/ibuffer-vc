@@ -133,10 +133,15 @@ If the file is not under version control, nil is returned instead."
                    (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
             (cons backend root-dir)))))))
 
+(defun ibuffer-vc-read-filter ()
+  "Read a cons cell of (backend-name . root-dir)."
+  (cons (completing-read "VC backend: " vc-handled-backends nil t)
+        (read-directory-name "Root directory: " nil nil t)))
+
 (define-ibuffer-filter vc-root
     "Toggle current view to buffers with vc root dir QUALIFIER."
   (:description "vc root dir"
-                :reader (read-regexp "Filter by vc root dir: "))
+                :reader (ibuffer-vc-read-filter))
   (ibuffer-awhen (ibuffer-vc-root buf)
     (equal qualifier it)))
 
