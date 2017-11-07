@@ -135,7 +135,8 @@ If the file is not under version control, nil is returned instead."
 
 (defun ibuffer-vc-read-filter ()
   "Read a cons cell of (backend-name . root-dir)."
-  (cons (completing-read "VC backend: " vc-handled-backends nil t)
+  (cons (car (read-from-string
+              (completing-read "VC backend: " vc-handled-backends nil t)))
         (read-directory-name "Root directory: " nil nil t)))
 
 (define-ibuffer-filter vc-root
