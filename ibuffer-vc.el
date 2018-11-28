@@ -59,7 +59,7 @@
 ;;               " "
 ;;               (vc-status 16 16 :left)
 ;;               " "
-;;               filename-and-process)))
+;;               vc-relative-file)))
 ;;
 ;; To sort by vc status, use `ibuffer-do-sort-by-vc-status', which can
 ;; also be selected by repeatedly executing
@@ -189,6 +189,15 @@ If the file is not under version control, nil is returned instead."
 (define-ibuffer-column vc-status
   (:name "VC status")
   (ibuffer-vc--status-string))
+
+;;;###autoload (autoload 'ibuffer-make-column-vc-relative-file "ibuffer-vc")
+(define-ibuffer-column vc-relative-file
+  (:name "Filename")
+  (when buffer-file-name
+    (let ((root (cdr (ibuffer-vc-root buffer))))
+      (if root
+          (file-relative-name buffer-file-name root)
+        (abbreviate-file-name buffer-file-name)))))
 
 ;;;###autoload (autoload 'ibuffer-make-column-vc-status-mini "ibuffer-vc")
 (define-ibuffer-column vc-status-mini

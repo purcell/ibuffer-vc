@@ -17,6 +17,7 @@ That's where `ibuffer-vc` comes in: it lets you:
 * Group your buffers by their parent vc root directory
 * See the VC status of the associated files
 * Sort buffers by their VC status
+* Display buffer filenames that are relative to their VC root
 
 ## Screenshot ##
 
