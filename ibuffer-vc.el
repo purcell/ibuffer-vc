@@ -154,7 +154,7 @@ If the file is not under version control, nil is returned instead."
   (let ((roots (ibuffer-remove-duplicates
                 (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
     (mapcar (lambda (vc-root)
-              (cons (format "%s:%s" (car vc-root) (cdr vc-root))
+              (cons (format "%s: %s" (car vc-root) (cdr vc-root))
                     `((vc-root . ,vc-root))))
             roots)))
 
