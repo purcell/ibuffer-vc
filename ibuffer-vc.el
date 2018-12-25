@@ -193,11 +193,12 @@ If the file is not under version control, nil is returned instead."
 ;;;###autoload (autoload 'ibuffer-make-column-vc-relative-file "ibuffer-vc")
 (define-ibuffer-column vc-relative-file
   (:name "Filename")
-  (when buffer-file-name
-    (let ((root (cdr (ibuffer-vc-root buffer))))
-      (if root
-          (file-relative-name buffer-file-name root)
-        (abbreviate-file-name buffer-file-name)))))
+  (if buffer-file-name
+      (let ((root (cdr (ibuffer-vc-root buffer))))
+        (if root
+            (file-relative-name buffer-file-name root)
+          (abbreviate-file-name buffer-file-name)))
+    ""))
 
 ;;;###autoload (autoload 'ibuffer-make-column-vc-status-mini "ibuffer-vc")
 (define-ibuffer-column vc-status-mini
