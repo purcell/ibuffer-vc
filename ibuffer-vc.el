@@ -98,7 +98,7 @@ This option can be used to exclude certain files from the grouping mechanism."
 ;;; Group and filter ibuffer entries by parent vc directory
 
 (defun ibuffer-vc--include-file-p (file)
-  "Return t iff FILE should be included in ibuffer-vc's filtering."
+  "Return t if FILE should be included in ibuffer-vc's filtering."
   (and file
        (or (null ibuffer-vc-skip-if-remote)
            (not (file-remote-p file)))
