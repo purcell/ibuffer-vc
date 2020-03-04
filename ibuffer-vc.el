@@ -1,11 +1,10 @@
-;;; ibuffer-vc.el --- Group ibuffer's list by VC project, or show VC status
+;;; ibuffer-vc.el --- Group ibuffer's list by VC project, or show VC status  -*- lexical-binding: t -*-
 ;;
 ;; Copyright (C) 2011-2014 Steve Purcell
 ;;
 ;; Author: Steve Purcell <steve@sanityinc.com>
-;; Keywords: themes
-;; Package-Requires: ((cl-lib "0.2"))
-;; X-URL: http://github.com/purcell/ibuffer-vc
+;; Keywords: convenience
+;; Package-Requires: ((emacs "24.1") (cl-lib "0.2"))
 ;; URL: http://github.com/purcell/ibuffer-vc
 ;; Version: DEV
 ;;
