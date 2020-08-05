@@ -5,7 +5,7 @@
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: convenience
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.2"))
-;; URL: http://github.com/purcell/ibuffer-vc
+;; URL: https://github.com/purcell/ibuffer-vc
 ;; Version: DEV
 ;;
 ;; This program is free software; you can redistribute it and/or modify
