@@ -117,7 +117,7 @@ This option can be used to exclude certain files from the grouping mechanism."
 If the file is not under version control, nil is returned instead."
   (let ((file-name (with-current-buffer buf
                      (file-truename (or buffer-file-name
-					default-directory)))))
+                                        default-directory)))))
     (when (ibuffer-vc--include-file-p file-name)
       (let ((backend (ibuffer-vc--deduce-backend file-name)))
         (when backend
@@ -129,6 +129,8 @@ If the file is not under version control, nil is returned instead."
                    ((memq backend '(cvs CVS)) (vc-find-root file-name "CVS"))
                    ((memq backend '(rcs RCS)) (or (vc-find-root file-name "RCS")
                                                   (concat file-name ",v")))
+                   ((memq backend '(sccs SCCS)) (or (vc-find-root file-name "SCCS")
+                                                    (concat "s." file-name)))
                    ((memq backend '(src SRC)) (or (vc-find-root file-name ".src")
                                                   (concat file-name ",v")))
                    (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
