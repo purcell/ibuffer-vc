@@ -6,7 +6,7 @@
 ;; Keywords: convenience
 ;; Package-Requires: ((emacs "24.1") (cl-lib "0.2"))
 ;; URL: https://github.com/purcell/ibuffer-vc
-;; Version: DEV
+;; Version: 0
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
