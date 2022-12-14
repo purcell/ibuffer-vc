@@ -146,7 +146,7 @@ If the file is not under version control, nil is returned instead."
     "Toggle current view to buffers with vc root dir QUALIFIER."
   (:description "vc root dir"
                 :reader (ibuffer-vc-read-filter))
-  (ibuffer-awhen (ibuffer-vc-root buf)
+  (when-let ((it (ibuffer-vc-root buf)))
     (equal qualifier it)))
 
 ;;;###autoload
