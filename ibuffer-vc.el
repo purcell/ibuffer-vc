@@ -94,7 +94,37 @@ This option can be used to exclude certain files from the grouping mechanism."
   :type 'function
   :group 'ibuffer-vc)
 
+(defcustom ibuffer-vc-buffer-file-name-function 'ibuffer-vc-buffer-file-truename
+  "Function which tells the file name associated with a buffer.
+
+The function is passed a buffer, and should return the file name
+to associate with that buffer.
+
+This option can be configured along with
+`ibuffer-vc-include-function' to include or exclude certain
+buffers from the grouping mechanism."
+  :type 'function
+  :group 'ibuffer-vc)
+
 ;;; Group and filter ibuffer entries by parent vc directory
+
+(defun ibuffer-vc-buffer-file-truename (buf)
+  "Return the truename of the file associated with BUF.
+
+The file associated with BUF is the one that BUF is visiting,
+whose file name is stored in the buffer-local variable
+`buffer-file-name'.
+
+If that is nil, but BUF sets the variable
+`list-buffers-directory' (for example, Dired and Magit buffers),
+then consider that directory to be the file associated with the
+buffer.
+
+If neither of those is set for BUF, return nil."
+  (with-current-buffer buf
+    (when-let ((file-name (or buffer-file-name
+                              list-buffers-directory)))
+      (file-truename file-name))))
 
 (defun ibuffer-vc--include-file-p (file)
   "Return t iff FILE should be included in ibuffer-vc's filtering."
@@ -115,9 +145,7 @@ This option can be used to exclude certain files from the grouping mechanism."
 (defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir) for BUF.
 If the file is not under version control, nil is returned instead."
-  (let ((file-name (with-current-buffer buf
-                     (file-truename (or buffer-file-name
-                                        default-directory)))))
+  (let ((file-name (funcall ibuffer-vc-buffer-file-name-function buf)))
     (when (ibuffer-vc--include-file-p file-name)
       (let ((backend (ibuffer-vc--deduce-backend file-name)))
         (when backend
