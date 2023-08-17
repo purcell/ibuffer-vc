@@ -4,7 +4,7 @@
 ;;
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: convenience
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "25.1") (seq "2"))
 ;; URL: https://github.com/purcell/ibuffer-vc
 ;; Version: 0
 ;;
@@ -71,7 +71,7 @@
 (require 'ibuffer)
 (require 'ibuf-ext)
 (require 'vc-hooks)
-(require 'cl-lib)
+(require 'seq)
 
 
 (defgroup ibuffer-vc nil
@@ -138,31 +138,28 @@ If neither of those is set for BUF, return nil."
   (if (fboundp 'vc-responsible-backend)
       (ignore-errors (vc-responsible-backend file))
     (or (vc-backend file)
-        (cl-loop for backend in vc-handled-backends
-                 when (vc-call-backend backend 'responsible-p file)
-                 return backend))))
+        (seq-filter (lambda (b) (vc-call-backend b 'responsible-p file)) vc-handled-backends))))
 
 (defun ibuffer-vc-root (buf)
   "Return a cons cell (backend-name . root-dir) for BUF.
 If the file is not under version control, nil is returned instead."
   (let ((file-name (funcall ibuffer-vc-buffer-file-name-function buf)))
     (when (ibuffer-vc--include-file-p file-name)
-      (let ((backend (ibuffer-vc--deduce-backend file-name)))
-        (when backend
-          (let* ((root-fn-name (intern (format "vc-%s-root" (downcase (symbol-name backend)))))
-                 (root-dir
-                  (cond
-                   ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
-                   ((memq backend '(darcs DARCS)) (vc-darcs-find-root file-name))
-                   ((memq backend '(cvs CVS)) (vc-find-root file-name "CVS"))
-                   ((memq backend '(rcs RCS)) (or (vc-find-root file-name "RCS")
-                                                  (concat file-name ",v")))
-                   ((memq backend '(sccs SCCS)) (or (vc-find-root file-name "SCCS")
-                                                    (concat "s." file-name)))
-                   ((memq backend '(src SRC)) (or (vc-find-root file-name ".src")
-                                                  (concat file-name ",v")))
-                   (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
-            (cons backend root-dir)))))))
+      (when-let ((backend (ibuffer-vc--deduce-backend file-name)))
+        (let* ((root-fn-name (intern (format "vc-%s-root" (downcase (symbol-name backend)))))
+               (root-dir
+                (cond
+                 ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
+                 ((memq backend '(darcs DARCS)) (vc-darcs-find-root file-name))
+                 ((memq backend '(cvs CVS)) (vc-find-root file-name "CVS"))
+                 ((memq backend '(rcs RCS)) (or (vc-find-root file-name "RCS")
+                                                (concat file-name ",v")))
+                 ((memq backend '(sccs SCCS)) (or (vc-find-root file-name "SCCS")
+                                                  (concat "s." file-name)))
+                 ((memq backend '(src SRC)) (or (vc-find-root file-name ".src")
+                                                (concat file-name ",v")))
+                 (t (error "ibuffer-vc: don't know how to find root for vc backend '%s' - please submit a bug report or patch" backend)))))
+          (cons backend root-dir))))))
 
 (defun ibuffer-vc-read-filter ()
   "Read a cons cell of (backend-name . root-dir)."
@@ -180,7 +177,7 @@ If the file is not under version control, nil is returned instead."
 ;;;###autoload
 (defun ibuffer-vc-generate-filter-groups-by-vc-root ()
   "Create a set of ibuffer filter groups based on the vc root dirs of buffers."
-  (let ((roots (ibuffer-remove-duplicates
+  (let ((roots (seq-uniq
                 (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
     (mapcar (lambda (vc-root)
               (cons (format "%s: %s" (car vc-root) (cdr vc-root))
@@ -193,11 +190,10 @@ If the file is not under version control, nil is returned instead."
   (interactive)
   (setq ibuffer-filter-groups (ibuffer-vc-generate-filter-groups-by-vc-root))
   (message "ibuffer-vc: groups set")
-  (let ((ibuf (get-buffer "*Ibuffer*")))
-    (when ibuf
-        (with-current-buffer ibuf
-          (pop-to-buffer ibuf)
-          (ibuffer-update nil t)))))
+  (when-let ((ibuf (get-buffer "*Ibuffer*")))
+    (with-current-buffer ibuf
+      (pop-to-buffer ibuf)
+      (ibuffer-update nil t))))
 
 
 ;;; Display vc status info in the ibuffer list
