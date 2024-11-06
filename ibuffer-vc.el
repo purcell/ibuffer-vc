@@ -150,7 +150,9 @@ If the file is not under version control, nil is returned instead."
                (root-dir
                 (cond
                  ((fboundp root-fn-name) (funcall root-fn-name file-name)) ; git, svn, hg, bzr (at least)
-                 ((memq backend '(darcs DARCS)) (vc-darcs-find-root file-name))
+                 ((and (fboundp 'vc-darcs-find-root)                       ; vc-darcs is an external package
+                       (memq backend '(darcs DARCS)))
+                  (vc-darcs-find-root file-name))
                  ((memq backend '(cvs CVS)) (vc-find-root file-name "CVS"))
                  ((memq backend '(rcs RCS)) (or (vc-find-root file-name "RCS")
                                                 (concat file-name ",v")))
